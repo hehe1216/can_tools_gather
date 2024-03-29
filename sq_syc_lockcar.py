@@ -4,9 +4,9 @@ import datetime
 
 can_obj = ControlCAN_lib.control_can()
 rev = can_obj.TVCI_CAN_OBJ()
-
-init_obj = ControlCAN_lib.create_init_config(can_obj)
 print("---------------------陕汽商用车锁车工具-------------------------")
+bard = input("请输入波特率(1.250K  0.500K)")
+init_obj = ControlCAN_lib.create_init_config(can_obj, int(bard))
 print("打开设备%d" % (ControlCAN_lib.vci_open_device(can_obj, 3, 0, 0)))
 print("初始化%d" % (ControlCAN_lib.vci_init_can(can_obj, 3, 0, 0, init_obj)))
 print("启动%d" % (ControlCAN_lib.vci_start_can(can_obj, 3, 0, 0)))
@@ -66,17 +66,24 @@ def run():
                 global g_passcode_cnt
                 g_passcode_cnt = g_passcode_cnt + 1
                 if g_passcode_cnt == 10:
-                    candata = input("请输入密码:(格式:01 02 03 04 05 06 00 00)")
-                    data5 = create_send_can(0x18FF6517, candata)
-                    send_can(data5)
+                    isinput = input("是否输入密码:(Y/N)")
+                    if isinput == 'Y' or isinput == 'y':
+                        candata = input("请输入密码:(格式:01 02 03 04 05 06 00 00)")
+                        data5 = create_send_can(0x18FF6517, candata)
+                        send_can(data5)
                     g_passcode_cnt = 0
 
             # 密码校验结果
             if Id == 0x18FF12A5:
                 if Data[0] == 0:
                     print("密码正确！")
-                if Data[1] == 1:
-                    print("密码错误！")    
+                if Data[0] == 1:
+                    print("密码错误！")  
+                    isinput = input("是否输入密码:(Y/N)")
+                    if isinput == 'Y' or isinput == 'y':
+                        candata = input("请输入密码:(格式:01 02 03 04 05 06 00 00)")
+                        data6 = create_send_can(0x18FF6517, candata)
+                        send_can(data6)  
 
             # 锁车状态--发给仪表                
             if Id == 0x18FF10A5:

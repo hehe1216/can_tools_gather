@@ -50,7 +50,7 @@ class ControlCAN:
                     ('Reserved', c_ubyte * 3)]
 
     def __init__(self):
-        self.libdll = windll.LoadLibrary('../canplaybak/ControlCAN.dll')
+        self.libdll = windll.LoadLibrary('../can_tools_gather/ControlCAN.dll')
         self.libdll.VCI_OpenDevice.argtypes = [c_uint, c_uint, c_uint]
         self.libdll.VCI_OpenDevice.restype = c_uint
         self.libdll.VCI_CloseDevice.argtypes = [c_uint, c_uint]
